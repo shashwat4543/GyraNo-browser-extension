@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="lib/pdf.min.js"></script>
+</head>
+<body>
+
+  <div class="shell" id="shell">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">AI Assistant</span>
+      </div>
+      <div class="header-actions">
+        <span class="turn-count hidden" id="turnCount">0 turns</span>
+
+        <!-- ✅ NEW: Resize toggle buttons -->
+        <div class="resize-btns" title="Resize window">
+          <button class="btn-resize" id="btnSizeS" data-size="s" title="Small">S</button>
+          <button class="btn-resize active" id="btnSizeM" data-size="m" title="Medium">M</button>
+          <button class="btn-resize" id="btnSizeL" data-size="l" title="Large">L</button>
+        </div>
+
+        <button class="btn-icon" id="btnClear" title="Clear conversation">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mode Tabs -->
+    <nav class="tab-bar">
+      <button class="tab active" data-mode="ask">Ask Page</button>
+      <button class="tab" data-mode="scrape">Scrape</button>
+      <button class="tab" data-mode="pdf">PDF</button>
+      <button class="tab" data-mode="image">Image</button>
+      <button class="tab" data-mode="youtube">YouTube</button>
+    </nav>
+
+    <!-- Upload Zone (PDF / Image modes) -->
+    <div class="upload-zone hidden" id="uploadZone">
+      <input type="file" id="fileInput" accept=".pdf,image/*" hidden />
+      <div class="upload-inner" id="uploadInner">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p class="upload-label">Drop file here or <span class="upload-link">browse</span></p>
+        <p class="upload-hint" id="uploadHint">Supports PDF files</p>
+      </div>
+      <div class="upload-preview hidden" id="uploadPreview">
+        <span class="preview-icon">📄</span>
+        <span class="preview-name" id="previewName"></span>
+        <button class="btn-remove" id="btnRemoveFile">✕</button>
+      </div>
+    </div>
+
+    <!-- YouTube status badge -->
+    <div class="yt-badge hidden" id="ytBadge">
+      <span class="yt-dot"></span>
+      <span id="ytBadgeText">Detecting YouTube...</span>
+    </div>
+
+    <!-- Chat Thread -->
+    <div class="chat-wrap" id="chatWrap">
+
+      <!-- Idle state -->
+      <div class="idle-state" id="idleState">
+        <div class="idle-orb"></div>
+        <p class="idle-text">Ready to assist</p>
+      </div>
+
+      <!-- Scrollable message thread -->
+      <div class="chat-thread hidden" id="chatThread"></div>
+
+      <!-- Typing indicator -->
+      <div class="typing-indicator hidden" id="typingIndicator">
+        <div class="ai-avatar">AI</div>
+        <div class="chat-bubble ai-bubble dots-bubble">
+          <span class="bubble-dot"></span>
+          <span class="bubble-dot"></span>
+          <span class="bubble-dot"></span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-box hidden" id="errorBox">
+        <span class="error-icon">⚠</span>
+        <span id="errorText"></span>
+      </div>
+
+    </div>
+
+    <!-- Chat Footer -->
+    <div class="chat-footer hidden" id="chatFooter">
+      <span class="context-badge" id="contextBadge">0 messages</span>
+      <button class="btn-copy-last" id="btnCopy">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copy last
+      </button>
+    </div>
+
+    <!-- Question Input -->
+    <div class="input-row">
+      <textarea
+        id="questionInput"
+        class="question-input"
+        placeholder="Ask anything about this page…"
+        rows="2"
+      ></textarea>
+      <button class="btn-send" id="btnSend" title="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ✅ NEW: Drag-to-resize handle at bottom-right corner -->
+    <div class="resize-handle" id="resizeHandle" title="Drag to resize">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+        <rect x="6" y="0" width="1.5" height="10" rx="0.75" opacity="0.4"/>
+        <rect x="0" y="6" width="10" height="1.5" rx="0.75" opacity="0.4"/>
+        <rect x="3" y="3" width="1.5" height="7" rx="0.75" opacity="0.25"/>
+        <rect x="3" y="3" width="7" height="1.5" rx="0.75" opacity="0.25"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <script type="module" src="popup.js"></script>
+
+  <!-- ✅ NEW: Resize logic (inline, no extra file needed) -->
+  <script>
+    // Size presets: [width, minHeight]
+    const SIZES = {
+      s: [320, 480],
+      m: [380, 560],
+      l: [480, 680],
+    };
+
+    function applySize(key) {
+      const [w, h] = SIZES[key];
+      document.documentElement.style.width  = w + "px";
+      document.body.style.width             = w + "px";
+      document.body.style.minHeight         = h + "px";
+      document.querySelector(".shell").style.minHeight = h + "px";
+
+      document.querySelectorAll(".btn-resize").forEach((b) =>
+        b.classList.toggle("active", b.dataset.size === key)
+      );
+      try { localStorage.setItem("aiext_size", key); } catch {}
+    }
+
+    // Restore saved size
+    try {
+      const saved = localStorage.getItem("aiext_size");
+      if (saved && SIZES[saved]) applySize(saved);
+    } catch {}
+
+    // Size button clicks
+    document.querySelectorAll(".btn-resize").forEach((btn) => {
+      btn.addEventListener("click", () => applySize(btn.dataset.size));
+    });
+
+    // Drag-to-resize handle
+    const handle = document.getElementById("resizeHandle");
+    let dragging = false, startX, startY, startW, startH;
+
+    handle.addEventListener("mousedown", (e) => {
+      dragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startW = document.body.offsetWidth;
+      startH = document.body.offsetHeight;
+      document.body.style.userSelect = "none";
+      e.preventDefault();
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const newW = Math.max(300, Math.min(600, startW + (e.clientX - startX)));
+      const newH = Math.max(420, Math.min(860, startH + (e.clientY - startY)));
+      document.documentElement.style.width = newW + "px";
+      document.body.style.width            = newW + "px";
+      document.body.style.minHeight        = newH + "px";
+      document.querySelector(".shell").style.minHeight = newH + "px";
+      // Deactivate preset buttons when free-dragging
+      document.querySelectorAll(".btn-resize").forEach((b) => b.classList.remove("active"));
+    });
+
+    document.addEventListener("mouseup", () => {
+      dragging = false;
+      document.body.style.userSelect = "";
+    });
+  </script>
+</body>
+</html>
