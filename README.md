@@ -153,6 +153,13 @@ Each mode maintains its own independent chat thread:
 5. Ask follow-ups: "What did they say about X?" / "Summarize just the last minute"
 
 ---
+## Screenshots
+<img width="1920" height="1080" alt="Screenshot (60)" src="https://github.com/user-attachments/assets/2d876350-27a9-4297-9962-c3a78ba53d21" />
+<img width="1920" height="1080" alt="Screenshot (61)" src="https://github.com/user-attachments/assets/e54959e5-b58d-466e-9997-2db44eea64ef" />
+<img width="1920" height="1080" alt="Screenshot (62)" src="https://github.com/user-attachments/assets/f8cb8032-df7b-4717-b531-c41fc2ef6753" />
+<img width="1920" height="1080" alt="Screenshot (64)" src="https://github.com/user-attachments/assets/036fcb3e-57b5-4cce-a761-44b9e6a7677f" />
+
+
 
 ## ⚙️ Configuration
 
