@@ -1,8 +1,9 @@
-# 🤖 AI Multi-Context Assistant
+# GyraNō 🧠
 
-A production-ready Chrome Extension (Manifest V3) that brings AI-powered analysis directly into your browser — answer questions about web pages, PDFs, screenshots, and YouTube transcripts using the HuggingFace Inference API. Features full **conversation history** with context-aware multi-turn chat across all modes.
+GyraNō is an AI-powered browser extension designed to enhance the way users consume YouTube content. 
+It intelligently processes video data and generates concise summaries through a clean, distraction-free interface.
 
----
+Built with performance and simplicity in mind, GyraNō focuses on delivering fast, readable insights without interrupting the viewing experience.
 
 ## ✨ Features
 
@@ -82,47 +83,8 @@ const HF_API_KEY = "hf_abc123yourrealtokenhere";
 Open `content.js` and add a `PING` case inside the `switch (message.type)` block.
 This lets the background script verify the content script is alive before sending messages.
 
-Find this block at the top of the listener:
-
-```js
-switch (message.type) {
-  case "ASK_PAGE":
-```
-
-And add the PING case **above** it:
-
-```js
-switch (message.type) {
-  case "PING":
-    sendResponse({ pong: true });
-    break;
-
-  case "ASK_PAGE":
-    sendResponse(handleAskPage());
-    break;
-  // ... rest of existing cases
-```
-
 ---
 
-### Step 4 — Add Extension Icons
-
-Create an `icons/` folder inside `ai-extension/` and add three PNG files:
-
-```
-ai-extension/
-└── icons/
-    ├── icon16.png    (16×16 px)
-    ├── icon48.png    (48×48 px)
-    └── icon128.png   (128×128 px)
-```
-
-**Quick ways to create icons:**
-- [https://favicon.io](https://favicon.io) — free generator, download as PNG
-- [https://icon.kitchen](https://icon.kitchen) — generates all sizes at once
-- Any image editor — a simple colored square or letter works fine for development
-
----
 
 ### Step 5 — Load the Extension in Chrome
 
@@ -132,7 +94,7 @@ ai-extension/
 4. Select the `ai-extension/` folder (the one containing `manifest.json`)
 5. The extension will appear in your toolbar
 
-> If you don't see the icon, click the puzzle piece 🧩 in the toolbar and pin **AI Multi-Context Assistant**.
+> If you don't see the icon, click the puzzle piece 🧩 in the toolbar and pin **GyraNō**.
 
 ---
 
@@ -214,7 +176,7 @@ All tunable constants are at the top of their respective files:
 
 | Purpose | Model |
 |---------|-------|
-| Text Q&A, summarization, chat | `mistralai/Mistral-7B-Instruct-v0.2` |
+| Text Q&A, summarization, chat | `meta-llama/Llama-3.1-8B-Instruct` |
 | Image captioning | `Salesforce/blip-image-captioning-base` |
 
 Both models are free via the [HuggingFace Inference API](https://huggingface.co/inference-api).
@@ -259,4 +221,4 @@ Both models are free via the [HuggingFace Inference API](https://huggingface.co/
 
 ## 📄 License
 
-MIT — free to use, modify, and distribute.
+GNU GPL V 2.0
