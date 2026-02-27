@@ -222,3 +222,5 @@ Both models are free via the [HuggingFace Inference API](https://huggingface.co/
 ## 📄 License
 
 GNU GPL V 2.0
+
+© 2026 Shashwat Jha. All rights reserved.
