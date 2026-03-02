@@ -1,6 +1,6 @@
 // ⚠️ PRODUCTION NOTE: Move API key to a backend proxy to avoid exposing it client-side.
 
-const HF_API_KEY     = "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";
+const HF_API_KEY     = "hf_YOUR_API_KEY";
 const HF_CHAT_URL    = "https://router.huggingface.co/v1/chat/completions";
 const TEXT_MODEL     = "meta-llama/Llama-3.1-8B-Instruct";
 // Confirmed working on HF router free tier via novita provider
