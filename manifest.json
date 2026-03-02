@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GyraNō",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI-powered assistant that answers questions about web pages, PDFs, screenshots, and YouTube videos.",
 
   "action": {

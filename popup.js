@@ -25,6 +25,7 @@ const state = {
   imageFile:    null,
   imageCaption: null,
   imageBuffer:  null,
+  imageMimeType: null,
   // UI lock
   isLoading:    false,
 };
@@ -177,9 +178,10 @@ async function handleFileSelect(file) {
     renderThread("pdf");
   } else if (state.mode === "image") {
     try {
-      const { buffer } = await prepareImage(file);
+      const { buffer, mimeType } = await prepareImage(file);
       state.imageFile    = file;
-      state.imageBuffer  = buffer;
+      state.imageBuffer   = buffer;
+      state.imageMimeType = mimeType;
       state.imageCaption = null;
       state.contexts.image = null;
       state.histories.image = [];
@@ -200,7 +202,7 @@ function showFilePreview(icon, name) {
 
 function clearFileState() {
   state.pdfFile = null; state.pdfText = null;
-  state.imageFile = null; state.imageCaption = null; state.imageBuffer = null;
+  state.imageFile = null; state.imageCaption = null; state.imageBuffer = null; state.imageMimeType = null;
   els.fileInput.value = "";
   els.uploadInner.classList.remove("hidden");
   els.uploadPreview.classList.add("hidden");
@@ -314,8 +316,7 @@ ${pageText}
     case "image": {
       if (!state.imageFile) throw new Error("Please upload an image first.");
       if (!state.imageCaption) {
-        const blob = new Blob([state.imageBuffer], { type: state.imageFile.type });
-        const raw  = await queryImageModel(blob);
+        const raw  = await queryImageModel(state.imageBuffer, state.imageMimeType || "image/jpeg");
         state.imageCaption = formatCaption(raw);
         // Show caption as first AI message
         appendMessage("ai", `🖼️ Image description:\n\n${state.imageCaption}`);
